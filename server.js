@@ -1,11 +1,11 @@
 import express from 'express'
 import { createClient } from '@supabase/supabase-js'
 import jwt from 'jsonwebtoken'
+import serverless from 'serverless-http'
 const supabaseUrl = 'https://wwyjhkhfusrutqcpkfcc.supabase.co'
 const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Ind3eWpoa2hmdXNydXRxY3BrZmNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjAxNDI1MzEsImV4cCI6MjA3NTcxODUzMX0.9FxnIV0qxqfLhmQoWsaEqDtDDHWjT2ZEKhqK069tOww"
 export const supabase = createClient(supabaseUrl, supabaseKey)
 const app = express()
-const porta = 9090
 const JWT_SECRET = 'd!iY.,2xRUH}wdwx8K51!$#IaTBUJVGPWb_ZHsO2H2l9'
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -67,7 +67,7 @@ app.post('/login', async (req, res) =>{
         console.log("Senha errada!")
         res.json({mensage: "senha incorreta!"})
     }
-})
+});
 
 app.post('/cadastro', async (req, res) =>{
     const gmail = req.body.gmail
@@ -106,6 +106,4 @@ app.get('/catalogo', verificarToken, async (req, res) =>{
    } 
 })
 
-app.listen(porta, () =>{
-    console.log("esta no ar")
-})
+export default serverless(app)
