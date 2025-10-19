@@ -50,25 +50,8 @@ app.post('/login', async (req, res) =>{
     }
 
     if(!data){
-        console.log("não encontrado, criando um novo!")
-        const { data, error} = await supabase
-        .from('usuarios')
-        .insert([{email: gmail, senha: se}])
-        .select('id, email')
-        .single()
-
-        const token = jwt.sign(
-            { id: data.id, email: data.email },
-            JWT_SECRET,
-            {expiresIn: '10h'}
-        )
-        
-        if(error){
-            console.error(error)
-        } else {
-            console.log("usuario adicionado")
-            res.json({mensage: "cadastro sucedido", token})
-        } 
+        console.log("não encontrado")
+        res.json({mensage: "usuario não cadastrado!"})
         return
     }
 
@@ -79,11 +62,36 @@ app.post('/login', async (req, res) =>{
         {expiresIn: '10h'}
         )
         console.log("login bem sucedido!")
-        res.json({mensage: "login deu bom", token})
+        res.json({mensage: "login bem sucedido!", token})
     } else {
         console.log("Senha errada!")
+        res.json({mensage: "senha incorreta!"})
     }
 })
+
+app.post('/cadastro', async (req, res) =>{
+    const gmail = req.body.gmail
+    const se = req.body.se
+    const { data, error} = await supabase
+    .from('usuarios')
+    .insert([{email: gmail, senha: se}])
+    .select('id, email')
+    .single()
+
+    const token = jwt.sign(
+        { id: data.id, email: data.email },
+        JWT_SECRET,
+        {expiresIn: '10h'}
+    )
+      
+    if(error){
+        console.error(error)
+    } else {
+        console.log("usuario adicionado")
+        res.json({mensage: "cadastro bem sucedido sucedido", token})
+    } 
+})
+
 
 app.get('/catalogo', verificarToken, async (req, res) =>{
     console.log("usuario seguro entrou!", req.usuario)
